@@ -9,15 +9,6 @@ class TelaInicial extends StatelessWidget {
     return criaTelaInicialApp(context);
   }
 }
-
-// Tema principal do APP
-ThemeData criaTemaApp(){
-    return ThemeData(
-        primarySwatch: Colors.deepPurple,
-        brightness: Brightness.light
-    );
-}
-
 // Tela inicial do APP
 Scaffold criaTelaInicialApp(BuildContext context){
     return Scaffold(
@@ -25,3 +16,11 @@ Scaffold criaTelaInicialApp(BuildContext context){
         body: new Login()
     );
 }
+
+// Tema principal do APP
+ThemeData criaTemaApp(){
+    return ThemeData(
+        primarySwatch: Colors.deepPurple,
+        brightness: Brightness.light
+    );
+} 
