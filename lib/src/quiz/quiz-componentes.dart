@@ -8,7 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 
 
-Widget criaCarouselFamosos() {
+Widget criaCarouselFamosos(CarouselSlider carousel) {
 
     return new FutureBuilder<List<Pessoa>>(
       future: obtemFamososFromApi('https://quiz-famosos-api.herokuapp.com/quiz/pos/obter_lista_todos_famosos'),
@@ -17,54 +17,17 @@ Widget criaCarouselFamosos() {
         List<Pessoa> pessoas = snapshot.data;
           return new Container(
             padding: EdgeInsets.only(top: 25),
-            child: CarouselSlider(
+            child: carousel = new CarouselSlider(
             height: 480,
             viewportFraction: 1.0,
             items: pessoas.map((pessoa) => 
               Column(
                 children: <Widget>[
                   Container(
-                    child: Image.network(pessoa.urlImagem, height: 345, width: 300, fit: BoxFit.fill),
+                    child: Image.network(pessoa.urlImagem, height: 320, width: 310, fit: BoxFit.fill),
                     decoration: decoracaoBordaCartao()
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5),
-                    height: 60,
-                    width: 320,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment(0.0, 0.0),
-                          child: Text(pessoa.nome, style: TextStyle(color: Colors.amberAccent, fontSize: 20, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold)),
-                        ),
-                        Container(
-                          alignment: Alignment(0.0, 0.0),
-                          child: Text(pessoa.dica, style: TextStyle(color: Colors.white, fontSize: 20, fontStyle: FontStyle.italic)),
-                        )
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.indigoAccent,
-                      border: Border(
-                          left: BorderSide(
-                            color: Colors.indigo[100],
-                            width: 10.0
-                          ),
-                          top: BorderSide(
-                            color: Colors.indigo[100],
-                            width: 4.0
-                          ),
-                          bottom: BorderSide(
-                            color: Colors.indigo,
-                            width: 8.0
-                          ),
-                          right: BorderSide(
-                            color: Colors.deepOrangeAccent,
-                            width: 4.0
-                          ),
-                      ),
-                    )
-                  )
+                  criaLabelDescricaoFamoso(pessoa.nome, pessoa.dica)
                 ], 
               )
             ).toList(),
@@ -73,7 +36,46 @@ Widget criaCarouselFamosos() {
       },
     );
 }
-
+Container criaLabelDescricaoFamoso (String nomeFamoso, String dica) {
+  return  Container(
+            margin: EdgeInsets.only(top: 5),
+            height: 60,
+            width: 330,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment(0.0, 0.0),
+                  child: Text(nomeFamoso, style: TextStyle(color: Colors.amberAccent, fontSize: 20, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold)),
+                ),
+                Container(
+                  alignment: Alignment(0.0, 0.0),
+                  child: Text(dica, style: TextStyle(color: Colors.white, fontSize: 20, fontStyle: FontStyle.italic)),
+                )
+              ],
+            ),
+            decoration: BoxDecoration(
+              color: Colors.indigoAccent,
+              border: Border(
+                  left: BorderSide(
+                    color: Colors.indigo[100],
+                    width: 10.0
+                  ),
+                  top: BorderSide(
+                    color: Colors.indigo[100],
+                    width: 4.0
+                  ),
+                  bottom: BorderSide(
+                    color: Colors.indigo,
+                    width: 8.0
+                  ),
+                  right: BorderSide(
+                    color: Colors.deepOrangeAccent,
+                    width: 4.0
+                  ),
+              ),
+            )
+  );
+}
 BoxDecoration decoracaoBordaCartao(){
 
   return BoxDecoration(
@@ -97,6 +99,28 @@ BoxDecoration decoracaoBordaCartao(){
             )
       )
   );
+}
+
+Column criaBotaoCarousel(String txtBotao, IconData icone, VoidCallback funcaoBotao) {
+
+  return Column(
+        children: <Widget>[
+          Container(
+            width: 150,
+            color: Colors.orange,
+            child: FlatButton(
+                onPressed: funcaoBotao,
+                child: Column(
+                  children: <Widget>[
+                    Icon(icone),
+                    Text(txtBotao, style: TextStyle(color: Colors.blue, fontSize: 15))
+                  ],
+                ),
+            ),
+          ),
+
+      ],
+    );
 }
 
 class Pessoa {

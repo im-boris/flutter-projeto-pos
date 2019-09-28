@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Quiz idade dos famosos',
       debugShowCheckedModeBanner: false,
       theme: criaTemaApp(),
-      home: TelaInicial()
+      home: Quiz()
     ); 
   }
 }
