@@ -1,41 +1,92 @@
 
 import 'dart:collection';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
 
-Widget criaCarouselFamosos(CarouselSlider carousel) {
 
-    return new FutureBuilder<List<Pessoa>>(
-      future: obtemFamososFromApi('https://quiz-famosos-api.herokuapp.com/quiz/pos/obter_lista_todos_famosos'),
-      builder: (context, snapshot) {
-        //if (!snapshot.hasData) return Container();
-        List<Pessoa> pessoas = snapshot.data;
-          return new Container(
-            padding: EdgeInsets.only(top: 25),
-            child: carousel = new CarouselSlider(
-            height: 480,
-            viewportFraction: 1.0,
-            items: pessoas.map((pessoa) => 
-              Column(
-                children: <Widget>[
-                  Container(
-                    child: Image.network(pessoa.urlImagem, height: 320, width: 310, fit: BoxFit.fill),
-                    decoration: decoracaoBordaCartao()
-                  ),
-                  criaLabelDescricaoFamoso(pessoa.nome, pessoa.dica)
-                ], 
-              )
-            ).toList(),
-          ),
-        );
-      },
-    );
+
+class SliderIdadeFamosos extends StatefulWidget {
+
+  double idade;
+  final ValueChanged<double> definirChuteValorIdade;
+
+  SliderIdadeFamosos({
+    this.idade,
+    this.definirChuteValorIdade
+  });
+
+
+  @override
+  _SliderIdadeFamososState createState() => _SliderIdadeFamososState();
+
 }
+
+class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
+
+
+
+  @override
+  Widget build(BuildContext context) { 
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+          criaSliderIdadeFamosos(), 
+          criaLabelIdadeFamoso(widget.idade.toInt())
+      ],
+    ); 
+  }
+
+  Container criaSliderIdadeFamosos(){
+
+    return Container(
+        width: 265,
+        color: Colors.grey,
+        child: Slider(
+          min: 18.0,
+          max: 90.0,
+          value: widget.idade,
+          onChanged: mudandoValorIdade,
+          onChangeEnd: widget.definirChuteValorIdade
+        ),
+    );
+
+  }
+
+  mudandoValorIdade(double valorSelecionado){
+    setState(() {
+        widget.idade = valorSelecionado;
+    });
+  }
+}
+
+Container criaLabelIdadeFamoso(int idadePalpite){
+  return Container(
+      color: Colors.grey,
+      height: 70,
+      width: 60,
+      child: Center(
+        child: Text('$idadePalpite', style: TextStyle(color: Colors.black, fontSize: 25)),
+      ),
+  );
+}
+
+Column criaColunaImagemEDescricaoFamoso(Pessoa pessoa){
+  return  Column(
+      children: <Widget>[
+        Container(
+          child: Image.network(pessoa.urlImagem, height: 320, width: 310, fit: BoxFit.fill),
+          decoration: decoracaoBordaCartao()
+        ),
+        criaLabelDescricaoFamoso(pessoa.nome, pessoa.dica)
+      ], 
+  );
+}
+
+
 Container criaLabelDescricaoFamoso (String nomeFamoso, String dica) {
   return  Container(
             margin: EdgeInsets.only(top: 5),
@@ -101,13 +152,13 @@ BoxDecoration decoracaoBordaCartao(){
   );
 }
 
-Column criaBotaoCarousel(String txtBotao, IconData icone, VoidCallback funcaoBotao) {
+Column criaBotaoCarousel(Color cor, double larguraBotao, String txtBotao, IconData icone, VoidCallback funcaoBotao) {
 
   return Column(
         children: <Widget>[
           Container(
-            width: 150,
-            color: Colors.orange,
+            width: larguraBotao,
+            color: cor,
             child: FlatButton(
                 onPressed: funcaoBotao,
                 child: Column(
