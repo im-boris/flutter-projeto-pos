@@ -52,6 +52,7 @@ class _QuizState extends State<Quiz> {
             ),
             Container(
               margin: EdgeInsets.only(top: 15),
+              height: 90,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

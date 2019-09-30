@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:clippy_flutter/clippy_flutter.dart';
 
 
 
@@ -41,10 +42,16 @@ class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
   }
 
   Container criaSliderIdadeFamosos(){
+    
 
     return Container(
-        width: 265,
-        color: Colors.grey,
+        width: 240,
+        height: 70,
+        //color: Colors.grey,
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(20))
+        ),
         child: Slider(
           min: 18.0,
           max: 90.0,
@@ -63,15 +70,20 @@ class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
   }
 }
 
-Container criaLabelIdadeFamoso(int idadePalpite){
-  return Container(
-      color: Colors.grey,
-      height: 70,
-      width: 60,
-      child: Center(
-        child: Text('$idadePalpite', style: TextStyle(color: Colors.black, fontSize: 25)),
-      ),
-  );
+Star criaLabelIdadeFamoso(int idadePalpite){
+
+    return Star(
+         numberOfPoints: 5,
+         child: Container(
+           width: 90,
+           height: 90,
+           color: Colors.deepOrangeAccent,
+           child: Center(
+             child: Text('$idadePalpite', style: TextStyle(color: Colors.black, fontSize: 25)),
+           ),
+         ),
+    );
+
 }
 
 Column criaColunaImagemEDescricaoFamoso(Pessoa pessoa){
@@ -157,14 +169,16 @@ Column criaBotaoCarousel(Color cor, double larguraBotao, String txtBotao, IconDa
   return Column(
         children: <Widget>[
           Container(
+            padding: EdgeInsets.only(top: 20),
             width: larguraBotao,
+            height: 90,
             color: cor,
             child: FlatButton(
                 onPressed: funcaoBotao,
                 child: Column(
                   children: <Widget>[
-                    Icon(icone),
-                    Text(txtBotao, style: TextStyle(color: Colors.blue, fontSize: 15))
+                    Icon(icone,size: 35.0,),
+                    Text(txtBotao, style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold))
                   ],
                 ),
             ),
