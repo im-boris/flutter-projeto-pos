@@ -14,7 +14,7 @@ class Login extends StatelessWidget {
 Column desenhandoTelaLogin(BuildContext context){
   return Column(
       children: <Widget>[
-        criaImagemTopApp('https://image.freepik.com/free-vector/abstract-white-background-with-blue-hexagonal-shapes_1017-19744.jpg', 0),
+        //criaImagemTopApp('https://image.freepik.com/free-vector/abstract-white-background-with-blue-hexagonal-shapes_1017-19744.jpg', 0),
         criaTexto('Quiz idade dos famosos', Colors.green, 25, FontStyle.italic, FontWeight.bold, 25),
         Container(
           height: 80,
