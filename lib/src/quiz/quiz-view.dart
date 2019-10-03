@@ -11,24 +11,49 @@ class Quiz extends StatefulWidget {
 
   @override
   _QuizState createState() => _QuizState();
+
+
 }
 
 class _QuizState extends State<Quiz> {
+
   CarouselSlider carousel;
 
-  double idade = 18.0;
+  double idade;
   List<Pessoa> listaFamosos;
-  Pessoa famosoAtual;
-  int idadeFamosoAtual;
-  int dicaIdadeFamosoAtual;
-  int pontuacaoJogador;
-  
+
   List<PessoaDTO> listaFamososDTO;
   PessoaDTO famosoDTO;
   
+  JogadorQuiz jogador;
+
+
+  @override
+  void initState() {
+      super.initState();
+
+      idade = 18.0;
+
+      jogador = new JogadorQuiz();
+
+      jogador.nomeJogador = "Mateus";
+      jogador.qtdTentativas = 0;
+      jogador.qtdErros = 0;
+      jogador.pontuacao = 0;
+
+      print('----- Dados jogador carregado ----- ');
+      print('----- ${jogador.nomeJogador} ----- ');
+      print('----- ${jogador.qtdTentativas} ----- ');
+      print('----- ${jogador.qtdErros} ----- ');
+      print('----- ${jogador.pontuacao} ----- ');
+      // This will print "initState() ---> MainPage"
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       body: Container(
         child: Column(
@@ -40,7 +65,7 @@ class _QuizState extends State<Quiz> {
                 //if (!snapshot.hasData) return Container();
                 List<Pessoa> pessoas = snapshot.data;
                 listaFamosos = pessoas;
-                listaFamososDTO = criaListaFamosoDTO(pessoas.length);
+                listaFamososDTO = criaListaFamosoDTO(pessoas);
 
                 return new Container(
                     padding: EdgeInsets.only(top: 25),
@@ -83,47 +108,10 @@ class _QuizState extends State<Quiz> {
     );
   }
 
-  List<PessoaDTO> criaListaFamosoDTO(int tam){
-      List<PessoaDTO> lista = new List<PessoaDTO>();
-
-      for (var i = 0; i < tam; i++) {
-
-        PessoaDTO dto = new PessoaDTO();
-
-        dto.nome = '';
-        dto.dataNasc = '';
-        dto.urlImagem = '';
-        dto.dica = '';
-        dto.sexo = '';
-        dto.qtdTentativas = 0;
-        dto.idadeFamoso = 0;
-        dto.dicaIdadeFamosoAtual = geraDicaIdade();
-
-        lista.add(dto);
-      }
-
-      return lista;
-  }
-
-  PessoaDTO criaFamosoDTOInicial(){
-    PessoaDTO dto = new PessoaDTO();
-
-    dto.dicaIdadeFamosoAtual = 0;
-    dto.idadeFamoso = 0;
-    dto.qtdTentativas = 0;
-
-    return dto;
-
-  }   
-
   dynamic famosoSendoApresentadoAgora(int x){
-
-    famosoAtual = listaFamosos[x];
-
-    idadeFamosoAtual = calculaIdadeFamosoAtual();
-    dicaIdadeFamosoAtual = geraDicaIdade();
-
+    famosoDTO = listaFamososDTO[x];
   }
+  
   void funcaoDefinirChuteValorIdade(double val){
       setState(() {
           idade = val;
@@ -134,56 +122,28 @@ class _QuizState extends State<Quiz> {
     carousel.previousPage(duration: Duration(milliseconds: 800), curve: Curves.fastOutSlowIn);
   }
 
-  void acaoBotaoProximo (){
+  void acaoBotaoProximo(){
     carousel.nextPage(duration: Duration(milliseconds: 800), curve: Curves.fastOutSlowIn);
   }
 
   void acaoBotaoChutarIdadeFamoso(){
 
-    if ( descobreSeAcertouChuteIdade(idade.toInt()) ) {
-        print('Parabens, vc acertou ${famosoAtual.nome} tem $idadeFamosoAtual anos');
+    jogador.qtdTentativas++;
+    
+    if ( descobreSeAcertouChuteIdade(idade.toInt(), famosoDTO.idadeFamoso) ) {
+        print('Parabens, ${jogador.nomeJogador}, ${famosoDTO.nome} tem ${famosoDTO.idadeFamoso} anos\n vc acertou em ${jogador.qtdTentativas} tentativas');
+
     } else{
-        print('Errou. Dica : idade entre ${idadeFamosoAtual - dicaIdadeFamosoAtual} e ${idadeFamosoAtual + dicaIdadeFamosoAtual}');
+        jogador.qtdErros++;
+        print('Errou. Dica : ${famosoDTO.nome} tem idade entre ${famosoDTO.idadeFamoso - famosoDTO.dicaIdadeFamosoAtual} e ${famosoDTO.idadeFamoso + famosoDTO.dicaIdadeFamosoAtual} anos');
+        print('qtd erros nessa foto : ${jogador.qtdErros}');
     }
 
-  }
-
-  int geraDicaIdade(){
-
-    Random rand = new Random();
-    int min = 1;
-    int max = 10;
-
-    int numeroDicaRandom = min + rand.nextInt(max - min);
-
-    return numeroDicaRandom;
-  }
-
-  bool descobreSeAcertouChuteIdade(int chuteIdade){
-    
-    if (chuteIdade == idadeFamosoAtual)
-      return true;
-
-    return false;
-    
-  }
-
-  int calculaIdadeFamosoAtual (){
-
-    int idadeFamoso = 0;
-
-    List<String> ano = famosoAtual.dataNasc.split('/');
-    String dataNascimentoFormatada = ano[2]+'-'+ ano[1]+'-'+ ano[0];
-
-    DateTime dataFormatada = DateTime.parse(dataNascimentoFormatada);
-    Duration duracao =  DateTime.now().difference(dataFormatada);
-    idadeFamoso = (duracao.inDays/365).floor().toInt();
-
-    return idadeFamoso;
   }
 
   void funcaoCallBack(BuildContext context) {
       Navigator.pop(context);
   }
+
 }
 

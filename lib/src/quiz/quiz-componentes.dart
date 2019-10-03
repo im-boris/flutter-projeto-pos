@@ -1,5 +1,6 @@
 
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -73,15 +74,15 @@ class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
 Star criaLabelIdadeFamoso(int idadePalpite){
 
     return Star(
-         numberOfPoints: 5,
-         child: Container(
-           width: 90,
-           height: 90,
-           color: Colors.deepOrangeAccent,
-           child: Center(
-             child: Text('$idadePalpite', style: TextStyle(color: Colors.black, fontSize: 25)),
-           ),
-         ),
+        numberOfPoints: 5,
+        child: Container(
+          width: 90,
+          height: 90,
+          color: Colors.deepOrangeAccent,
+          child: Center(
+            child: Text('$idadePalpite', style: TextStyle(color: Colors.black, fontSize: 25)),
+          ),
+        ),
     );
 
 }
@@ -213,6 +214,16 @@ class Pessoa {
   }
 
 }
+class JogadorQuiz {
+
+  String nomeJogador;
+  int qtdTentativas;
+  int qtdErros;
+  int pontuacao;
+
+  JogadorQuiz({this.nomeJogador, this.qtdTentativas, this.qtdErros, this.pontuacao});
+
+}
 
 class PessoaDTO {
 
@@ -223,12 +234,54 @@ class PessoaDTO {
   String sexo;
   int idadeFamoso;
   int dicaIdadeFamosoAtual;
-  int qtdTentativas;
 
-  PessoaDTO({this.nome, this.dataNasc, this.urlImagem, this.dica, this.sexo});
-  //PessoaDTO({this.idadeFamoso, this.dicaIdadeFamosoAtual, this.qtdTentativas});
+  PessoaDTO({this.nome, this.dataNasc, this.urlImagem, this.dica, this.sexo, this.idadeFamoso, this.dicaIdadeFamosoAtual});
 
+}
 
+List<PessoaDTO> criaListaFamosoDTO(List<Pessoa> listaPessoas){
+    List<PessoaDTO> lista = new List<PessoaDTO>();
+    for (var i = 0; i < listaPessoas.length; i++) {
+
+      PessoaDTO dto = new PessoaDTO();
+
+      dto.nome = listaPessoas[i].nome;
+      dto.dataNasc = listaPessoas[i].dataNasc;
+      dto.urlImagem = listaPessoas[i].urlImagem;
+      dto.dica = listaPessoas[i].dica;
+      dto.sexo = listaPessoas[i].sexo;
+      dto.idadeFamoso = calculaIdadeFamosoAtual(listaPessoas[i].dataNasc);
+      dto.dicaIdadeFamosoAtual = geraDicaIdade();
+
+      lista.add(dto);
+
+    }
+    return lista;
+} 
+
+int geraDicaIdade(){
+  Random rand = new Random();
+  int min = 1;
+  int max = 10;
+  int numeroDicaRandom = min + rand.nextInt(max - min);
+  return numeroDicaRandom;
+}
+
+int calculaIdadeFamosoAtual(String dataNasci){
+  int idadeFamoso = 0;
+  List<String> ano = dataNasci.split('/');
+  String dataNascimentoFormatada = ano[2]+'-'+ ano[1]+'-'+ ano[0];
+  DateTime dataFormatada = DateTime.parse(dataNascimentoFormatada);
+  Duration duracao =  DateTime.now().difference(dataFormatada);
+  idadeFamoso = (duracao.inDays/365).floor().toInt();
+  return idadeFamoso;
+}
+
+bool descobreSeAcertouChuteIdade(int chuteIdade, int idadeFamoso){
+  if (chuteIdade == idadeFamoso)
+    return true;
+
+  return false;
 }
 
 Future<List<Pessoa>> obtemFamososFromApi(String url) async {
