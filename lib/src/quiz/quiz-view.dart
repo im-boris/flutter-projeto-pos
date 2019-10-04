@@ -20,10 +20,12 @@ class _QuizState extends State<Quiz> {
   CarouselSlider carousel;
 
   double idade;
-  List<Pessoa> listaFamosos;
+  Color corEstrelinha;
+  //List<Pessoa> listaFamosos;
 
   List<PessoaDTO> listaFamososDTO;
   PessoaDTO famosoDTO;
+  int posicaoAtualFamoso;
   
   JogadorQuiz jogador;
 
@@ -33,6 +35,7 @@ class _QuizState extends State<Quiz> {
       super.initState();
 
       idade = 18.0;
+      corEstrelinha = Colors.blue;
 
       jogador = new JogadorQuiz();
 
@@ -41,30 +44,21 @@ class _QuizState extends State<Quiz> {
       jogador.qtdErros = 0;
       jogador.pontuacao = 0;
 
-      print('----- Dados jogador carregado ----- ');
-      print('----- ${jogador.nomeJogador} ----- ');
-      print('----- ${jogador.qtdTentativas} ----- ');
-      print('----- ${jogador.qtdErros} ----- ');
-      print('----- ${jogador.pontuacao} ----- ');
       // This will print "initState() ---> MainPage"
   }
 
-
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: Container(
         child: Column(
           children: <Widget>[
             FutureBuilder<List<Pessoa>>(
               //future: obtemFamososFromApi('https://quiz-famosos-api.herokuapp.com/quiz/pos/obter_lista_todos_famosos'),
-              future: obtemFamososFromLocal(),
+              future : obtemFamososFromLocal(),
               builder: (context, snapshot) {
                 //if (!snapshot.hasData) return Container();
                 List<Pessoa> pessoas = snapshot.data;
-                listaFamosos = pessoas;
                 listaFamososDTO = criaListaFamosoDTO(pessoas);
 
                 return new Container(
@@ -73,8 +67,8 @@ class _QuizState extends State<Quiz> {
                     height: 385,
                     viewportFraction: 1.0,
                     onPageChanged: famosoSendoApresentadoAgora,
-                    items: pessoas.map((pessoa) => 
-                      criaColunaImagemEDescricaoFamoso(pessoa),                    
+                    items: listaFamososDTO.map((famoso) => 
+                      criaColunaImagemEDescricaoFamoso(famoso)
                     ).toList(),
                   ),
                 );
@@ -95,9 +89,9 @@ class _QuizState extends State<Quiz> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  criaBotaoCarousel(Colors.red, 112, 20, 20, 0 ,0, 'Anterior', Icons.arrow_back, () => acaoBotaoAnterior()),
+                  criaBotaoCarousel(Colors.red, 112, 18, 18, 0 ,0, 'Anterior', Icons.arrow_back, () => acaoBotaoAnterior()),
                   criaBotaoCarousel(Colors.amber, 100, 0, 0, 0, 0, 'Chutar', Icons.check_circle_outline, () => acaoBotaoChutarIdadeFamoso()),
-                  criaBotaoCarousel(Colors.green, 112, 0, 0 , 20, 20, 'Proximo', Icons.arrow_forward, () => acaoBotaoProximo())
+                  criaBotaoCarousel(Colors.green, 112, 0, 0 , 18, 18, 'Proximo', Icons.arrow_forward, () => acaoBotaoProximo())
                 ],
               ),
             ),
@@ -109,6 +103,7 @@ class _QuizState extends State<Quiz> {
 
   dynamic famosoSendoApresentadoAgora(int x){
     famosoDTO = listaFamososDTO[x];
+    posicaoAtualFamoso = x;
   }
   
   void funcaoDefinirChuteValorIdade(double val){

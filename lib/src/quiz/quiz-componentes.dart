@@ -16,12 +16,14 @@ class SliderIdadeFamosos extends StatefulWidget {
   double idade;
   String textoValorMin;
   String textoValorMax;
+  Color cor;
   final ValueChanged<double> definirChuteValorIdade;
 
   SliderIdadeFamosos({
     this.idade,
     this.textoValorMin,
     this.textoValorMax,
+    this.cor,
     this.definirChuteValorIdade
   });
 
@@ -95,6 +97,7 @@ class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
   }
 }
 
+
 Star criaEstrelaDecoracaoIdadeFamoso(int idadePalpite){
 
     return Star(
@@ -111,7 +114,7 @@ Star criaEstrelaDecoracaoIdadeFamoso(int idadePalpite){
 
 }
 
-Column criaColunaImagemEDescricaoFamoso(Pessoa pessoa){
+Column criaColunaImagemEDescricaoFamoso(PessoaDTO pessoa){
   
   return  Column(
       children: <Widget>[
@@ -120,12 +123,15 @@ Column criaColunaImagemEDescricaoFamoso(Pessoa pessoa){
           height: 320,
           width: 329,
           child: Center(child: Text('famoso', style: TextStyle(color: Colors.black, fontSize: 25))),
-          decoration: decoracaoBordaCartao()
+          decoration: decoracaoBordaCartao(pessoa.corBordinhaIndicativo)
         ),
         criaLabelDescricaoFamoso(pessoa.nome, pessoa.dica)
       ], 
   );
 }
+
+
+
 
 
 Container criaLabelDescricaoFamoso (String nomeFamoso, String dica) {
@@ -168,21 +174,20 @@ Container criaLabelDescricaoFamoso (String nomeFamoso, String dica) {
             )
   );
 }
-BoxDecoration decoracaoBordaCartao(){
+BoxDecoration decoracaoBordaCartao(Color corBordinhaIndicativo){
 
   return BoxDecoration(
-        //borderRadius: BorderRadius.circular(20.0),
         border: Border(
             left: BorderSide(
               color: Colors.indigo[200],
               width: 15.0
             ),
             top: BorderSide(
-              color: Colors.deepOrangeAccent,
+              color: corBordinhaIndicativo,
               width: 4.0
             ),
             right: BorderSide(
-              color: Colors.deepOrangeAccent,
+              color: corBordinhaIndicativo,
               width: 4.0
             ),
             bottom: BorderSide(
@@ -266,8 +271,9 @@ class PessoaDTO {
   String sexo;
   int idadeFamoso;
   int dicaIdadeFamosoAtual;
+  Color corBordinhaIndicativo;
 
-  PessoaDTO({this.nome, this.dataNasc, this.urlImagem, this.dica, this.sexo, this.idadeFamoso, this.dicaIdadeFamosoAtual});
+  PessoaDTO({this.nome, this.dataNasc, this.urlImagem, this.dica, this.sexo, this.idadeFamoso, this.dicaIdadeFamosoAtual, this.corBordinhaIndicativo});
 
 }
 
@@ -284,6 +290,7 @@ List<PessoaDTO> criaListaFamosoDTO(List<Pessoa> listaPessoas){
       dto.sexo = listaPessoas[i].sexo;
       dto.idadeFamoso = calculaIdadeFamosoAtual(listaPessoas[i].dataNasc);
       dto.dicaIdadeFamosoAtual = geraDicaIdade();
+      dto.corBordinhaIndicativo = Colors.redAccent;
 
       lista.add(dto);
 
@@ -329,9 +336,8 @@ Future<List<Pessoa>> obtemFamososFromApi(String url) async {
 }
 
 Future<List<Pessoa>> obtemFamososFromLocal() async {
-   
 
-    var body = json.decode('{"listaFamosos":[{"nome":"Scarlett Johansson","dataNasc":"11/22/1984","urlImagem":"https://amp.insider.com/images/5c8a8141dd08611286199063-750-56.jpg","dica":"Viuva negra","sexo":"f"},{"nome":"Robert Downey, Jr.","dataNasc":"04/04/1965","urlImagem":"http://br.web.img2.acsta.net/pictures/18/06/29/00/35/0101925.jpg","dica":"Homem de ferro","sexo":"m"},{"nome":"Chris Evans","dataNasc":"06/13/1981","urlImagem":"https://www.altfg.com/film/wp-content/uploads/images/2016/05/captain-america-civil-war-chris-evans.jpg","dica":"Capitão america","sexo":"m"},{"nome":"Chris Hemsworth","dataNasc":"08/11/1983","urlImagem":"https://cdn.mamamia.com.au/wp/wp-content/uploads/2017/10/19170125/Thor-Ragnorok-Social-650x507.jpg","dica":"Thor","sexo":"m"},{"nome":"Jeremy Renner","dataNasc":"01/07/1971","urlImagem":"https://media.wired.com/photos/5d7125ee9e087200080de8f1/master/pass/Culture_Monitor_Renner-972293712.jpg","dica":"Gavião arqueiro","sexo":"m"},{"nome":"Mark Ruffalo","dataNasc":"11/22/1967","urlImagem":"https://upload.wikimedia.org/wikipedia/commons/1/11/Mark_Ruffalo_%2836201774756%29_%28cropped%29.jpg","dica":"Hulk em os vingadores","sexo":"m"},{"nome":"Tom Hiddleston","dataNasc":"02/09/1981","urlImagem":"https://i.pinimg.com/736x/d4/c7/fe/d4c7fef4d58523e144b6282ac6fe7971.jpg","dica":"Loki em os vingadores","sexo":"m"},{"nome":"Samuel L. Jackson","dataNasc":"12/21/1948","urlImagem":"https://cdn.britannica.com/77/191077-050-63262B99/Samuel-L-Jackson.jpg","dica":"Nick Fury em os vingadores","sexo":"m"},{"nome":"Paul Rudd","dataNasc":"04/06/1969","urlImagem":"https://upload.wikimedia.org/wikipedia/commons/9/92/Paul_Rudd_%28cropped%29_2.jpg","dica":"Homem-formiga","sexo":"m"},{"nome":"Tom Holland","dataNasc":"06/01/1996","urlImagem":"https://ewedit.files.wordpress.com/2018/06/tom-holland1.jpg?crop981px%2C103px%2C1010px%2C1010px&resize1200%2C1200","dica":"Homem-aranha UCM","sexo":"m"},{"nome":"Mariah Carey","dataNasc":"03/27/1970","urlImagem":"","dica":"Cantora","sexo":"f"},{"nome":"Karen Gillan","dataNasc":"11/28/1987","urlImagem":"https://gamespot1.cbsistatic.com/uploads/original/171/1712892/3360013-image.jpg","dica":"Nebulosa em os vingadores","sexo":"f"},{"nome":"Don Cheadle","dataNasc":"11/29/1964","urlImagem":"https://cdn1.thr.com/sites/default/files/imagecache/scale_crop_768_433/2019/07/gettyimages-969551878_0.jpg","dica":"War machine","sexo":"m"},{"nome":"Josh Brolin","dataNasc":"02/12/1968","urlImagem":"https://pmcvariety.files.wordpress.com/2019/02/josh-brolin.jpg?w1000","dica":"Thanos e Cable","sexo":"m"},{"nome":"Chris Pratt","dataNasc":"06/21/1979","urlImagem":"https://upload.wikimedia.org/wikipedia/commons/d/d0/Chris_Pratt_%2828046276644%29_%28cropped%29.jpg","dica":"Star Lord","sexo":"m"},{"nome":"Anthony Mackie","dataNasc":"09/23/1978","urlImagem":"https://www.indiewire.com/wp-content/uploads/2019/06/shutterstock_10216461ao.jpg","dica":"Falcão em os vingadores","sexo":"m"},{"nome":"Elizabeth Olsen","dataNasc":"02/16/1989","urlImagem":"","dica":"","sexo":"f"},{"nome":"Benedict Cumberbatch","dataNasc":"07/19/1976","urlImagem":"","dica":"Doutor Estranho","sexo":"m"},{"nome":"Sebastian Stan","dataNasc":"08/13/1982","urlImagem":"","dica":"Soldado Invernal","sexo":"m"},{"nome":"Chadwick Aaron Boseman","dataNasc":"11/29/1977","urlImagem":"","dica":"Pantera Negra","sexo":"m"},{"nome":"Dave Bautista","dataNasc":"01/18/1969","urlImagem":"","dica":"Drax","sexo":"m"},{"nome":"Benedict Wong","dataNasc":"06/03/1971","urlImagem":"","dica":"Wong em doutor estranho","sexo":"m"},{"nome":"Letitia Wright","dataNasc":"10/31/1993","urlImagem":"","dica":"Shuri em pantera negra","sexo":"f"}]}');
+    var body = await json.decode('{"listaFamosos":[{"nome":"Scarlett Johansson","dataNasc":"11/22/1984","urlImagem":"https://amp.insider.com/images/5c8a8141dd08611286199063-750-56.jpg","dica":"Viuva negra","sexo":"f"},{"nome":"Robert Downey, Jr.","dataNasc":"04/04/1965","urlImagem":"http://br.web.img2.acsta.net/pictures/18/06/29/00/35/0101925.jpg","dica":"Homem de ferro","sexo":"m"},{"nome":"Chris Evans","dataNasc":"06/13/1981","urlImagem":"https://www.altfg.com/film/wp-content/uploads/images/2016/05/captain-america-civil-war-chris-evans.jpg","dica":"Capitão america","sexo":"m"},{"nome":"Chris Hemsworth","dataNasc":"08/11/1983","urlImagem":"https://cdn.mamamia.com.au/wp/wp-content/uploads/2017/10/19170125/Thor-Ragnorok-Social-650x507.jpg","dica":"Thor","sexo":"m"},{"nome":"Jeremy Renner","dataNasc":"01/07/1971","urlImagem":"https://media.wired.com/photos/5d7125ee9e087200080de8f1/master/pass/Culture_Monitor_Renner-972293712.jpg","dica":"Gavião arqueiro","sexo":"m"},{"nome":"Mark Ruffalo","dataNasc":"11/22/1967","urlImagem":"https://upload.wikimedia.org/wikipedia/commons/1/11/Mark_Ruffalo_%2836201774756%29_%28cropped%29.jpg","dica":"Hulk em os vingadores","sexo":"m"},{"nome":"Tom Hiddleston","dataNasc":"02/09/1981","urlImagem":"https://i.pinimg.com/736x/d4/c7/fe/d4c7fef4d58523e144b6282ac6fe7971.jpg","dica":"Loki em os vingadores","sexo":"m"},{"nome":"Samuel L. Jackson","dataNasc":"12/21/1948","urlImagem":"https://cdn.britannica.com/77/191077-050-63262B99/Samuel-L-Jackson.jpg","dica":"Nick Fury em os vingadores","sexo":"m"},{"nome":"Paul Rudd","dataNasc":"04/06/1969","urlImagem":"https://upload.wikimedia.org/wikipedia/commons/9/92/Paul_Rudd_%28cropped%29_2.jpg","dica":"Homem-formiga","sexo":"m"},{"nome":"Tom Holland","dataNasc":"06/01/1996","urlImagem":"https://ewedit.files.wordpress.com/2018/06/tom-holland1.jpg?crop981px%2C103px%2C1010px%2C1010px&resize1200%2C1200","dica":"Homem-aranha UCM","sexo":"m"},{"nome":"Mariah Carey","dataNasc":"03/27/1970","urlImagem":"","dica":"Cantora","sexo":"f"},{"nome":"Karen Gillan","dataNasc":"11/28/1987","urlImagem":"https://gamespot1.cbsistatic.com/uploads/original/171/1712892/3360013-image.jpg","dica":"Nebulosa em os vingadores","sexo":"f"},{"nome":"Don Cheadle","dataNasc":"11/29/1964","urlImagem":"https://cdn1.thr.com/sites/default/files/imagecache/scale_crop_768_433/2019/07/gettyimages-969551878_0.jpg","dica":"War machine","sexo":"m"},{"nome":"Josh Brolin","dataNasc":"02/12/1968","urlImagem":"https://pmcvariety.files.wordpress.com/2019/02/josh-brolin.jpg?w1000","dica":"Thanos e Cable","sexo":"m"},{"nome":"Chris Pratt","dataNasc":"06/21/1979","urlImagem":"https://upload.wikimedia.org/wikipedia/commons/d/d0/Chris_Pratt_%2828046276644%29_%28cropped%29.jpg","dica":"Star Lord","sexo":"m"},{"nome":"Anthony Mackie","dataNasc":"09/23/1978","urlImagem":"https://www.indiewire.com/wp-content/uploads/2019/06/shutterstock_10216461ao.jpg","dica":"Falcão em os vingadores","sexo":"m"},{"nome":"Elizabeth Olsen","dataNasc":"02/16/1989","urlImagem":"","dica":"","sexo":"f"},{"nome":"Benedict Cumberbatch","dataNasc":"07/19/1976","urlImagem":"","dica":"Doutor Estranho","sexo":"m"},{"nome":"Sebastian Stan","dataNasc":"08/13/1982","urlImagem":"","dica":"Soldado Invernal","sexo":"m"},{"nome":"Chadwick Aaron Boseman","dataNasc":"11/29/1977","urlImagem":"","dica":"Pantera Negra","sexo":"m"},{"nome":"Dave Bautista","dataNasc":"01/18/1969","urlImagem":"","dica":"Drax","sexo":"m"},{"nome":"Benedict Wong","dataNasc":"06/03/1971","urlImagem":"","dica":"Wong em doutor estranho","sexo":"m"},{"nome":"Letitia Wright","dataNasc":"10/31/1993","urlImagem":"","dica":"Shuri em pantera negra","sexo":"f"}]}');
     
     var resp = body["listaFamosos"] as List;
 
