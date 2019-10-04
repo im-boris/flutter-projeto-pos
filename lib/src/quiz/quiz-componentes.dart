@@ -14,10 +14,14 @@ import 'package:clippy_flutter/clippy_flutter.dart';
 class SliderIdadeFamosos extends StatefulWidget {
 
   double idade;
+  String textoValorMin;
+  String textoValorMax;
   final ValueChanged<double> definirChuteValorIdade;
 
   SliderIdadeFamosos({
     this.idade,
+    this.textoValorMin,
+    this.textoValorMax,
     this.definirChuteValorIdade
   });
 
@@ -34,31 +38,51 @@ class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
   @override
   Widget build(BuildContext context) { 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      //mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-          criaSliderIdadeFamosos(), 
-          criaLabelIdadeFamoso(widget.idade.toInt())
+        Container(
+          child: criaSliderIdadeFamosos(widget.textoValorMin, widget.textoValorMax)
+        ),
+        Column(
+          children: <Widget>[
+            Container(
+              child: Column(
+                  children: <Widget>[
+                    //Text('idade', style: TextStyle(color: Colors.black, fontSize: 20, fontStyle: FontStyle.italic)),
+                    criaEstrelaDecoracaoIdadeFamoso(widget.idade.toInt())
+                  ],
+              ),
+            )
+          ],
+        )
       ],
     ); 
   }
 
-  Container criaSliderIdadeFamosos(){
-    
+  Container criaLabelMinMaxSlider(String texto, Color cor){
+    return Container (child: Text(texto, style: TextStyle(color: cor, fontSize: 20, fontWeight: FontWeight.bold)));
+  }
 
+  Container criaSliderIdadeFamosos(String textoValorMin, String textoValorMax){
+  
     return Container(
-        width: 240,
-        height: 70,
-        //color: Colors.grey,
+        height: 100,
         decoration: BoxDecoration(
-          color: Colors.grey,
+          //color: Colors.red,
           borderRadius: BorderRadius.all(Radius.circular(20))
         ),
-        child: Slider(
-          min: 18.0,
-          max: 90.0,
-          value: widget.idade,
-          onChanged: mudandoValorIdade,
-          onChangeEnd: widget.definirChuteValorIdade
+        child: Row(
+          children: <Widget>[
+            criaLabelMinMaxSlider(textoValorMin ,Colors.lightGreen),
+            Slider(
+              min: 18.0,
+              max: 90.0,
+              value: widget.idade,
+              onChanged: mudandoValorIdade,
+              onChangeEnd: widget.definirChuteValorIdade
+            ),
+            criaLabelMinMaxSlider(textoValorMax ,Colors.redAccent)
+          ],
         ),
     );
 
@@ -71,16 +95,16 @@ class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
   }
 }
 
-Star criaLabelIdadeFamoso(int idadePalpite){
+Star criaEstrelaDecoracaoIdadeFamoso(int idadePalpite){
 
     return Star(
         numberOfPoints: 5,
         child: Container(
-          width: 90,
-          height: 90,
-          color: Colors.deepOrangeAccent,
+          width: 85,
+          height: 85,
+          color: Colors.blue,
           child: Center(
-            child: Text('$idadePalpite', style: TextStyle(color: Colors.black, fontSize: 25)),
+            child: Text('$idadePalpite', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w800)),
           ),
         ),
     );
@@ -94,7 +118,7 @@ Column criaColunaImagemEDescricaoFamoso(Pessoa pessoa){
         Container(
           //child: Image.network(pessoa.urlImagem, height: 320, width: 310, fit: BoxFit.fill),
           height: 320,
-          width: 310,
+          width: 329,
           child: Center(child: Text('famoso', style: TextStyle(color: Colors.black, fontSize: 25))),
           decoration: decoracaoBordaCartao()
         ),
@@ -169,7 +193,7 @@ BoxDecoration decoracaoBordaCartao(){
   );
 }
 
-Column criaBotaoCarousel(Color cor, double larguraBotao, String txtBotao, IconData icone, VoidCallback funcaoBotao) {
+Column criaBotaoCarousel(Color cor, double larguraBotao, double curvaBordaBotaoLadoEsquerdoCima, double curvaBordaBotaoLadoEsquerdoBaixo, double curvaBordaBotaoLadoDireitoCima, double curvaBordaBotaoLadoDireitoBaixo, String txtBotao, IconData icone, VoidCallback funcaoBotao) {
 
   return Column(
         children: <Widget>[
@@ -177,7 +201,15 @@ Column criaBotaoCarousel(Color cor, double larguraBotao, String txtBotao, IconDa
             padding: EdgeInsets.only(top: 20),
             width: larguraBotao,
             height: 90,
-            color: cor,
+            decoration: BoxDecoration(
+              color: cor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(curvaBordaBotaoLadoEsquerdoCima),
+                bottomLeft: Radius.circular(curvaBordaBotaoLadoEsquerdoBaixo),
+                topRight: Radius.circular(curvaBordaBotaoLadoDireitoCima),
+                bottomRight: Radius.circular(curvaBordaBotaoLadoDireitoBaixo)
+              ),
+            ),
             child: FlatButton(
                 onPressed: funcaoBotao,
                 child: Column(

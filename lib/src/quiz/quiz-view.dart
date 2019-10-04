@@ -70,7 +70,7 @@ class _QuizState extends State<Quiz> {
                 return new Container(
                     padding: EdgeInsets.only(top: 25),
                     child: carousel = new CarouselSlider(
-                    height: 405,
+                    height: 385,
                     viewportFraction: 1.0,
                     onPageChanged: famosoSendoApresentadoAgora,
                     items: pessoas.map((pessoa) => 
@@ -81,12 +81,11 @@ class _QuizState extends State<Quiz> {
               },
             ),
             Container(
-              margin: EdgeInsets.only(top: 15, left: 18),
+              //color: Colors.red,
+              margin: EdgeInsets.only(left: 18, right: 15),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SliderIdadeFamosos(idade : idade, definirChuteValorIdade: funcaoDefinirChuteValorIdade),    // Passar uma função que altere o valor da idade dessa classe ao ser mudado na outra
-                  
+                  SliderIdadeFamosos(idade : idade, textoValorMin: '18', textoValorMax: '90', definirChuteValorIdade: funcaoDefinirChuteValorIdade),    // Passar uma função que altere o valor da idade dessa classe ao ser mudado na outra
                 ],
               ),
             ),
@@ -96,9 +95,9 @@ class _QuizState extends State<Quiz> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  criaBotaoCarousel(Colors.red, 112, 'Anterior', Icons.arrow_back, () => acaoBotaoAnterior()),
-                  criaBotaoCarousel(Colors.amber, 100, 'Chutar', Icons.check_circle_outline, () => acaoBotaoChutarIdadeFamoso()),
-                  criaBotaoCarousel(Colors.green, 112, 'Proximo', Icons.arrow_forward, () => acaoBotaoProximo())
+                  criaBotaoCarousel(Colors.red, 112, 20, 20, 0 ,0, 'Anterior', Icons.arrow_back, () => acaoBotaoAnterior()),
+                  criaBotaoCarousel(Colors.amber, 100, 0, 0, 0, 0, 'Chutar', Icons.check_circle_outline, () => acaoBotaoChutarIdadeFamoso()),
+                  criaBotaoCarousel(Colors.green, 112, 0, 0 , 20, 20, 'Proximo', Icons.arrow_forward, () => acaoBotaoProximo())
                 ],
               ),
             ),
