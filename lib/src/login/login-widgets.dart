@@ -39,12 +39,13 @@ Container criaBotao(String textoBotao, double tamBotao, Color cor, VoidCallback 
 
 }
 
-Container criaCampoEntrada(String textoCampo, TextInputType tipoEntradaTeclado, bool entradaTipoSenha, IconData iconeCampo, Color corIcone){
+Container criaCampoEntrada(String textoCampo, TextInputType tipoEntradaTeclado, bool entradaTipoSenha, IconData iconeCampo, Color corIcone, TextEditingController controller){
   return Container (
       width: 330,
       height: 50,
       margin: EdgeInsets.only(top: 15),
       child: new TextFormField(
+              controller: controller,
               obscureText: entradaTipoSenha,
               decoration: new InputDecoration(
                 suffixIcon: Icon(iconeCampo, color: corIcone),

@@ -54,8 +54,8 @@ class _QuizState extends State<Quiz> {
         child: Column(
           children: <Widget>[
             FutureBuilder<List<Pessoa>>(
-              //future: obtemFamososFromApi('https://quiz-famosos-api.herokuapp.com/quiz/pos/obter_lista_todos_famosos'),
-              future : obtemFamososFromLocal(),
+              future: obtemFamososFromApi('https://quiz-famosos-api.herokuapp.com/quiz/pos/obter_lista_todos_famosos'),
+              //future : obtemFamososFromLocal(),
               builder: (context, snapshot) {
                 //if (!snapshot.hasData) return Container();
                 List<Pessoa> pessoas = snapshot.data;
