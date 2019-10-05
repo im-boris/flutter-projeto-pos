@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_v1/src/login/login-widgets.dart';
+import 'package:quiz_v1/src/opcoes/opcoes-quiz.dart';
+import 'package:quiz_v1/src/quiz/quiz-componentes.dart';
 import 'package:quiz_v1/src/quiz/quiz-view.dart';
 
 class Login extends StatefulWidget {
@@ -12,6 +14,13 @@ class _LoginState extends State<Login> {
 
   final controleCampoTextoNome = TextEditingController();
   final controleCampoTextoSenha = TextEditingController();
+  JogadorQuiz jogador;
+
+  @override
+  void initState() {
+    jogador = new JogadorQuiz();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -30,7 +39,7 @@ class _LoginState extends State<Login> {
     return Column(
         children: <Widget>[
           criaImagemTopApp('https://ramakblog.files.wordpress.com/2016/02/oscars-supporting-actors-actress-montage-620.jpg?w=469&h=265', 0),
-          criaTexto('Quiz idade dos famosos', Colors.green, 25, FontStyle.italic, FontWeight.bold, 25),
+          criaTexto('Quiz idade dos famosos', Colors.black, 25, FontStyle.italic, null, 25),
           Container(
             height: 80,
             width: 360,
@@ -47,7 +56,8 @@ class _LoginState extends State<Login> {
 
           criaCampoEntrada('Senha', TextInputType.datetime, true, Icons.security, Colors.orange, controleCampoTextoSenha),
 
-          criaBotao('Entrar', 330, Colors.lightBlueAccent, ()=>logarNoApp(context) , 0, 0, 25),
+          //criaBotao('Entrar', 330, Colors.lightBlueAccent, ()=>logarNoApp(context) , 0, 0, 25),
+          criaBotao('Entrar', 330, Colors.lightBlueAccent, ()=>abrirOpcoesMenuQuiz(context) , 0, 0, 25),
 
           criaTexto('Esqueci a senha?', Colors.grey, 20, FontStyle.normal, FontWeight.normal, 33),
         
@@ -55,46 +65,55 @@ class _LoginState extends State<Login> {
         ],
     );
   }
+
+  void loginComFacebook(BuildContext context){
+      criaPopUpNotificacao(context, 'Ops!', 'Ainda não é possível logar com a conta facebook');
+  }
+
+  void loginComGoogle(BuildContext context){
+      criaPopUpNotificacao(context, 'Ops!', 'Ainda não é possível logar com a conta google');
+  }
+  
+  void logarNoApp(BuildContext context){
+
+    jogador.nomeJogador = controleCampoTextoNome.text;
+    Navigator.push(context,
+              MaterialPageRoute(builder: (context) => Quiz(jogador: jogador)),
+    );
+  }
+
+  void abrirOpcoesMenuQuiz(BuildContext context){
+
+    jogador.nomeJogador = controleCampoTextoNome.text;
+    Navigator.push(context,
+              MaterialPageRoute(builder: (context) => OpcoesQuiz(jogador: jogador)),
+    );
+  }
+
+  void criarContaNoApp(BuildContext context){
+    criaPopUpNotificacao(context, 'Ops!', 'Por enquanto não é necessário, pode criar um nome e entrar');
+    print('criar uma conta no app');
+  }
+
+  Future<void> criaPopUpNotificacao(BuildContext context, String msgTituloCaixa, String msgTextoCaixa) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(msgTituloCaixa),
+          content: Text(msgTextoCaixa),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 
-void loginComFacebook(BuildContext context){
-    criaPopUpNotificacao(context, 'Ops!', 'Ainda não é possível logar com a conta facebook');
-    print('login com facebook');
-}
-
-void loginComGoogle(BuildContext context){
-  criaPopUpNotificacao(context, 'Ops!', 'Ainda não é possível logar com a conta google');
-    print('login com google');
-}
-
-void logarNoApp(BuildContext context){
-  Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Quiz()),
-  );
-}
-
-void criarContaNoApp(BuildContext context){
-  criaPopUpNotificacao(context, 'Ops!', 'Por enquanto não é necessário, pode criar um nome e entrar');
-  print('criar uma conta no app');
-}
-
-Future<void> criaPopUpNotificacao(BuildContext context, String msgTituloCaixa, String msgTextoCaixa) {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(msgTituloCaixa),
-        content: Text(msgTextoCaixa),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Ok'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}

@@ -17,15 +17,18 @@ class SliderIdadeFamosos extends StatefulWidget {
   String textoValorMin;
   String textoValorMax;
   Color cor;
+  PessoaDTO pessoa;
   final ValueChanged<double> definirChuteValorIdade;
 
-  SliderIdadeFamosos({
+
+  SliderIdadeFamosos({Key key,
     this.idade,
     this.textoValorMin,
     this.textoValorMax,
     this.cor,
+    this.pessoa,
     this.definirChuteValorIdade
-  });
+  }) : super(key : key);
 
 
   @override
@@ -50,8 +53,7 @@ class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
             Container(
               child: Column(
                   children: <Widget>[
-                    //Text('idade', style: TextStyle(color: Colors.black, fontSize: 20, fontStyle: FontStyle.italic)),
-                    criaEstrelaDecoracaoIdadeFamoso(widget.idade.toInt())
+                    criaEstrelaDecoracaoIdadeFamoso(widget.idade.toInt(), widget.pessoa)
                   ],
               ),
             )
@@ -98,14 +100,22 @@ class _SliderIdadeFamososState extends State<SliderIdadeFamosos> {
 }
 
 
-Star criaEstrelaDecoracaoIdadeFamoso(int idadePalpite){
+Star criaEstrelaDecoracaoIdadeFamoso(int idadePalpite,PessoaDTO pessoa){
+
+    Color cor;
+
+    if (pessoa.acerto) {
+        cor = pessoa.corEstrelinhaIndicativoAcerto;
+    } else {
+        cor = pessoa.corEstrelinhaIndicativoNada;
+    }
 
     return Star(
         numberOfPoints: 5,
         child: Container(
           width: 85,
           height: 85,
-          color: Colors.blue,
+          color: cor,
           child: Center(
             child: Text('$idadePalpite', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w800)),
           ),
@@ -123,7 +133,7 @@ Column criaColunaImagemEDescricaoFamoso(PessoaDTO pessoa){
           height: 320,
           width: 329,
           //child: Center(child: Text('famoso', style: TextStyle(color: Colors.black, fontSize: 25))),
-          decoration: decoracaoBordaCartao(pessoa.corBordinhaIndicativo)
+          decoration: decoracaoBordaCartao()
         ),
         criaLabelDescricaoFamoso(pessoa.nome, pessoa.dica)
       ], 
@@ -174,7 +184,7 @@ Container criaLabelDescricaoFamoso (String nomeFamoso, String dica) {
             )
   );
 }
-BoxDecoration decoracaoBordaCartao(Color corBordinhaIndicativo){
+BoxDecoration decoracaoBordaCartao(){
 
   return BoxDecoration(
         border: Border(
@@ -183,11 +193,11 @@ BoxDecoration decoracaoBordaCartao(Color corBordinhaIndicativo){
               width: 15.0
             ),
             top: BorderSide(
-              color: corBordinhaIndicativo,
+              color: Colors.redAccent,
               width: 4.0
             ),
             right: BorderSide(
-              color: corBordinhaIndicativo,
+              color: Colors.redAccent,
               width: 4.0
             ),
             bottom: BorderSide(
@@ -271,10 +281,15 @@ class PessoaDTO {
   String sexo;
   int idadeFamoso;
   int dicaIdadeFamosoAtual;
-  Color corBordinhaIndicativo;
+  Color corEstrelinhaIndicativoAcerto;
+  Color corEstrelinhaIndicativoErro;
+  Color corEstrelinhaIndicativoNada;
+  bool acerto;
 
-  PessoaDTO({this.nome, this.dataNasc, this.urlImagem, this.dica, this.sexo, this.idadeFamoso, this.dicaIdadeFamosoAtual, this.corBordinhaIndicativo});
-
+  PessoaDTO({this.nome, this.dataNasc, this.urlImagem, this.dica, 
+             this.sexo, this.idadeFamoso, this.dicaIdadeFamosoAtual, 
+             this.corEstrelinhaIndicativoAcerto, this.corEstrelinhaIndicativoErro,
+             this.corEstrelinhaIndicativoNada, this.acerto});
 }
 
 List<PessoaDTO> criaListaFamosoDTO(List<Pessoa> listaPessoas){
@@ -290,7 +305,10 @@ List<PessoaDTO> criaListaFamosoDTO(List<Pessoa> listaPessoas){
       dto.sexo = listaPessoas[i].sexo;
       dto.idadeFamoso = calculaIdadeFamosoAtual(listaPessoas[i].dataNasc);
       dto.dicaIdadeFamosoAtual = geraDicaIdade();
-      dto.corBordinhaIndicativo = Colors.redAccent;
+      dto.corEstrelinhaIndicativoNada = Colors.grey;
+      dto.corEstrelinhaIndicativoAcerto = Colors.green;
+      dto.corEstrelinhaIndicativoErro = Colors.red;
+      dto.acerto = false;
 
       lista.add(dto);
 

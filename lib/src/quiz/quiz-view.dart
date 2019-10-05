@@ -9,6 +9,11 @@ import 'package:quiz_v1/src/quiz/quiz-componentes.dart';
 
 class Quiz extends StatefulWidget {
 
+  JogadorQuiz jogador;
+  String urlAPI;
+
+  Quiz({Key key, this.jogador, this.urlAPI}) : super(key : key);
+
   @override
   _QuizState createState() => _QuizState();
 
@@ -29,35 +34,42 @@ class _QuizState extends State<Quiz> {
   
   JogadorQuiz jogador;
 
-
   @override
   void initState() {
       super.initState();
 
       idade = 18.0;
-      corEstrelinha = Colors.blue;
-
       jogador = new JogadorQuiz();
 
-      jogador.nomeJogador = "Mateus";
+      jogador.nomeJogador = "";
       jogador.qtdTentativas = 0;
       jogador.qtdErros = 0;
       jogador.pontuacao = 0;
 
-      // This will print "initState() ---> MainPage"
+      famosoDTO = new PessoaDTO();
+      //famosoDTO.corEstrelinhaIndicativoAcerto = Colors.grey;
+      //corEstrelinha = Colors.grey;
+      famosoDTO.acerto = false;
+      famosoDTO.corEstrelinhaIndicativoNada = Colors.grey;
+      famosoDTO.corEstrelinhaIndicativoAcerto = Colors.green;
+      famosoDTO.corEstrelinhaIndicativoErro = Colors.red;
+      // famosoDTO.corEstrelinhaIndicativoNada = corEstrelinha;
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Container(
         child: Column(
           children: <Widget>[
             FutureBuilder<List<Pessoa>>(
-              future: obtemFamososFromApi('https://quiz-famosos-api.herokuapp.com/quiz/pos/obter_lista_todos_famosos'),
+              future: obtemFamososFromApi(widget.urlAPI),
               //future : obtemFamososFromLocal(),
               builder: (context, snapshot) {
-                //if (!snapshot.hasData) return Container();
+                if (!snapshot.hasData) {
+                  return Container();
+                }
                 List<Pessoa> pessoas = snapshot.data;
                 listaFamososDTO = criaListaFamosoDTO(pessoas);
 
@@ -79,7 +91,7 @@ class _QuizState extends State<Quiz> {
               margin: EdgeInsets.only(left: 18, right: 15),
               child: Row(
                 children: <Widget>[
-                  SliderIdadeFamosos(idade : idade, textoValorMin: '18', textoValorMax: '90', definirChuteValorIdade: funcaoDefinirChuteValorIdade),    // Passar uma função que altere o valor da idade dessa classe ao ser mudado na outra
+                  SliderIdadeFamosos(pessoa: famosoDTO, cor: famosoDTO.corEstrelinhaIndicativoNada, idade : idade, textoValorMin: '18', textoValorMax: '90', definirChuteValorIdade: funcaoDefinirChuteValorIdade),    // Passar uma função que altere o valor da idade dessa classe ao ser mudado na outra
                 ],
               ),
             ),
@@ -102,8 +114,14 @@ class _QuizState extends State<Quiz> {
   }
 
   dynamic famosoSendoApresentadoAgora(int x){
-    famosoDTO = listaFamososDTO[x];
-    posicaoAtualFamoso = x;
+
+    setState(() {
+      posicaoAtualFamoso = x;
+      famosoDTO = listaFamososDTO[x];
+
+      listaFamososDTO[x] = famosoDTO;
+
+    });
   }
   
   void funcaoDefinirChuteValorIdade(double val){
@@ -123,11 +141,23 @@ class _QuizState extends State<Quiz> {
   void acaoBotaoChutarIdadeFamoso(){
 
     jogador.qtdTentativas++;
-    
-    if ( descobreSeAcertouChuteIdade(idade.toInt(), famosoDTO.idadeFamoso) ) {
-        print('Parabens, ${jogador.nomeJogador}, ${famosoDTO.nome} tem ${famosoDTO.idadeFamoso} anos\n vc acertou em ${jogador.qtdTentativas} tentativas');
 
+    if ( descobreSeAcertouChuteIdade(idade.toInt(), famosoDTO.idadeFamoso) ) {    
+
+        setState(() {
+         famosoDTO.acerto = true;
+         famosoDTO.corEstrelinhaIndicativoNada = Colors.green;
+        });
+
+        print('Parabens, ${jogador.nomeJogador}, ${famosoDTO.nome} tem ${famosoDTO.idadeFamoso} anos\n vc acertou em ${jogador.qtdTentativas} tentativas');
     } else{
+
+        setState(() {
+         famosoDTO.acerto = false;
+         famosoDTO.corEstrelinhaIndicativoNada = Colors.grey;
+        });
+        
+        //corEstrelinha = famosoDTO.corEstrelinhaIndicativoNada;
         jogador.qtdErros++;
         print('Errou. Dica : ${famosoDTO.nome} tem idade entre ${famosoDTO.idadeFamoso - famosoDTO.dicaIdadeFamosoAtual} e ${famosoDTO.idadeFamoso + famosoDTO.dicaIdadeFamosoAtual} anos');
         print('qtd erros nessa foto : ${jogador.qtdErros}');
